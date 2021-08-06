@@ -214,7 +214,7 @@ def main():
     for items in generator(3, distinct_generator(items)):
         print(items)
     '''
-    fileio()
+    #fileio()
 if __name__ == "__main__":
     main()
     
