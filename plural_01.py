@@ -8,6 +8,11 @@ def built_in_collections():
     strings.split(';')
     "athomasfan".partition('thomas')
     print("The age of {0} is {1}".format('Thomas', 21))
+    long_string = "abcdefg" \
+                  "hijklmnop"\
+                  "qrstuv"\
+                  "wxyz"
+    print(long_string)
     
     major = "Computer Science"
     print(f"Thomas majors in {major}")
@@ -112,13 +117,28 @@ def iterables():
     iterator = iter(iterable)
     next(iterator) 
 
-def generator():
+def generator(count, iterable):
     #good for infinite sequences like sensor readings and must include one yield statement
     #are python iterators, you can call next(g) on a generator object g
-    yield 1
-    yield 2 
-    yield 3
+    counter = 0
+    for item in iterable:
+        if counter == count:
+            return
+        counter += 1
+        yield item
 
+def distinct_generator(iterable):
+    #generators are lazy, computation only happen just in time when the next result is requested
+    seen = set()
+    for item in iterable:
+        if item in seen:
+            continue
+        yield item
+        seen.add(item)
+
+    #example generator expression : single use objects
+    # million_squares = (x*x for x in range(1,1000001))
+    # sum(x*x for x in range(1,1000001))
 def convert(s):
     """
         Convert a string to an integer. Five Six = 56
@@ -151,13 +171,50 @@ def convert(s):
               file=sys.stderr)
         raise #reraises exception that is being currently handled
 
+def fileio():
+    #mode r(read) w(write) a(appending) + b(binary mode) t (text mode)    
+    f = open('wasteland.txt', mode = 'wt', encoding = 'utf-8')
+    f.write('Whats up\n')
+    f.close()
+
+    g = open('wasteland.txt', mode='rt' , encoding='utf-8')
+    print(g.read())
+    g.seek(0)
+    print(g.readline())
+    g.close()
+
+    h = open('wasteland.txt', mode = 'at' , encoding='utf-8')
+    h.writelines(
+         ['Son of man, \n',
+          'You cannot say, or guess,',
+          'for you know only, \n',
+          'A heap of broken images, ',
+          'where the sun beats\n'])
+    h.close()
+
+    #finally
+    try:
+        i = open('wasteland.txt', mode='rt', encoding= 'utf-8')
+        for line in i:
+            sys.stdout.write(line)
+    finally:
+         i.close()
+
+    #with-blocks ensure that file is closed
+    with open('wasteland.txt', mode='at', encoding= 'utf-8') as j:
+        j.writelines("My Name is Jeff")
+
 
 def main():
     #built_in_collections()
     #print(convert("five six".split()))
     #iterables()
-    g = generator()
-
-    
+    '''
+    items = [3,6,6,2,1,1]
+    for items in generator(3, distinct_generator(items)):
+        print(items)
+    '''
+    fileio()
 if __name__ == "__main__":
     main()
+    
