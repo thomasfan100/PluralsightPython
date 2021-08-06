@@ -1,3 +1,5 @@
+import sys
+from pprint import pprint as pp
 def built_in_collections():
     #strings
     print(":::STRINGS:::")
@@ -84,16 +86,78 @@ def encode_decode():
     decoded = encoded.decode('utf8')
 
 def iterables():
-    print("temporary")
-def exceptions():
+    print(":::ITERABLES:::")
+    #list comprehension
+    words = ["johnny", "tommy", "elfy"]
+    lengths = [len(word) for word in words] 
+    """
+    lengths = []
+    for word in words:
+        lengths.append(len(word))
+    """
+    
+    #dictionary comprehension
+    country_to_capital = { 'United Kingdom' :'London',
+                           'Brazil': 'Brasilia',
+                           'Morocco' : 'Rabat',
+                           'Sweden' : 'Stockholm' }
+    capital_to_country = {capital:country for country,capital in country_to_capital.items()}
+    pp(capital_to_country)
+
+    words2 = {x[0]:x*3 for x in words if len(x) > 4} #filtering a comprehension
+    pp(words2)
+
+    #iterable
+    iterable = ['Spring','Summer', 'Autumn', 'Winter']
+    iterator = iter(iterable)
+    next(iterator) 
+
+def generator():
+    #good for infinite sequences like sensor readings and must include one yield statement
+    #are python iterators, you can call next(g) on a generator object g
+    yield 1
+    yield 2 
+    yield 3
+
+def convert(s):
+    """
+        Convert a string to an integer. Five Six = 56
+        Can handle a KeyError. Ex: "eleventeen".split()
+        Can handle a TypeError. Ex: 156
+    """
+    print(":::EXCEPTIONS:::")
+    DIGIT_MAP = {
+        'zero' : '0',
+        'one' : '1',
+        'two' : '2',
+        'three' : '3',
+        'four' : '4',
+        'five' : '5',
+        'six' : '6',
+        'seven' : '7',
+        'eight' : '8',
+        'nine' : '9',
+    }
+    if not isinstance(s, list):
+        raise TypeError("Argument must be a list")
+
     try:
-        print(5/0)
-    except:
-        print("bad")
+        number = ''
+        for token in s:
+            number += DIGIT_MAP[token]
+        return int(number)
+    except (KeyError, TypeError) as e:
+        print(f"Conversion error: {e!r}", 
+              file=sys.stderr)
+        raise #reraises exception that is being currently handled
+
 
 def main():
     #built_in_collections()
-    exceptions()
+    #print(convert("five six".split()))
+    #iterables()
+    g = generator()
 
+    
 if __name__ == "__main__":
     main()
