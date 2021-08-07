@@ -36,6 +36,7 @@ class ClosuresandDecorators:
 
     def enclosing(self):
         #remember scope rule goes : Local -> Enclosing -> Global -> Builtin
+        #classes dont introduce new scopes
         message = 'enclosing'
         def local():
             #global message will access the global variable
@@ -90,3 +91,71 @@ class CallCount:
 @CallCount
 def hello(name):
     print('Hello, {}'.format(name))
+
+#:::PROPERTIES AND CLASS METHODS:::
+class TestContainer:
+    example_serial = 8250
+
+    #use static when no access is needed to either class or instance objects
+    @staticmethod
+    def _make_bic_code(owner_code,serial):
+        return owner_code + str(serial)
+
+    #transformed this into a class method below 
+    @staticmethod
+    def i_get_next_serial():
+        result = TestContainer.example_serial
+        TestContainer.example_serial += 1
+        return result
+
+    #use class when access to class object to call other class methods is needed
+    @classmethod 
+    def _get_next_serial(cls):
+        result = cls.example_serial
+        cls.example_serial += 1
+        return result
+    
+    #returning a class object that is assignable to a variable
+    #*args and **kwargs help __init__ in subclasses that need to pass more arguments that the base class
+    @classmethod
+    def create_empty(cls,owner_code, *args, **kwargs):
+        return cls(owner_code,contents = None, *args, **kwargs)
+    
+    @classmethod
+    def create_with_items(cls,owner_code,items, *args, **kwargs):
+        return cls(owner_code, contents = list(items), *args, **kwargs)
+
+    def __init__(self, owner_code, contents):
+        self.owner_code = owner_code
+        self.contents = contents
+        #modifying class attributes, self._get_next_serial works as well
+        #if you use self, child containers will run their own static methods
+        #if you use TestContainer, child containers that __make_bic_code will use 
+        #the definition from TestContainer. Try it!
+        self.bic = self._make_bic_code(owner_code = owner_code,
+                                serial = TestContainer._get_next_serial())
+
+class ChildContainer(TestContainer):
+    MAX_CELSIUS = 4.0 
+
+    @staticmethod
+    def _make_bic_code(owner_code, serial):
+        return "You are now here my friend."
+    
+    @staticmethod
+    def _c_to_f(celsius):
+        return celsius * 9/5 + 32
+
+    def __init__(self,owner_code, contents,celsius):
+        super().__init__(owner_code,contents)
+        self.celsius = celsius
+    
+    @property #is a getter that allows you to do something like x.celsius
+    def celsius(self):
+        return self._celsius
+
+    @celsius.setter
+    def celsius(self,value):
+        if value > ChildContainer.MAX_CELSIUS:
+            raise ValueError("Temperature too hot!")
+        self._celsius = value
