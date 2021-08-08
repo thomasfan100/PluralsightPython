@@ -55,6 +55,12 @@ def main():
     print('{:r}'.format(StringRepresentation(1,2)))
     '''
     #numeric and scaler types
-    testingNumbers()
+    #testingNumbers()
+    #iterables and iteration
+    advanced_iteration()
+    for i in ExampleIterable():
+        print(i)
+    for i in AlternateIterable():
+        print(i)
 if __name__ == "__main__":
     main()

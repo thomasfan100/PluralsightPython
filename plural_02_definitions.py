@@ -1,5 +1,13 @@
 import decimal
 from decimal import Decimal
+
+from fractions import Fraction
+
+import datetime
+
+from functools import reduce
+import operator
+
 def callableClass():
     return BasicFunctions() #returns a class object
 
@@ -176,6 +184,7 @@ class StringRepresentation:
     def __str__(self): #use a str to tell a human everything they need to know
         return "({}, {})".format(self.x, self.y)
     def __repr__(self): #use a repr to tell debuggers information they need to know
+        #repr also used when called in the REPR
         return 'StringRepresentation(x={}, y={})'.format(self.x,self.y)
     
     def __format__(self, f):
@@ -196,4 +205,120 @@ def testingNumbers():
     Decimal('Infinity')
     Decimal('-Infinity')
     Decimal('NaN')
+
+    #can perform + - * / // arithmetic on fractions.
+    two_thirds = Fraction(2,3)
+    print(two_thirds)
+    Fraction(.5) # Fraction 1,2
+    Fraction(Decimal('.1'))
+    Fraction('22/7') # Fraction 22,7
  
+    #complex numbers
+    x = 2j #sqrt -1
+    print("Complex: ", complex(-2,3))
+    c = 3 + 5j
+    print(c.real)
+    print(c.imag)
+
+    print(abs(-54))
+    print(round(0.2812,3)) #rounds towards even numbers
+
+    print(bin(42), oct(42), hex(42)[2:], int("acghd", base = 18)) #int base from 2-36
+
+    #datetime
+    datetime.date(year = 2014,month = 1,day = 6)
+    d = datetime.date.today()
+    print("Today is: ",d.year,"/",d.month,"/",d.day)
+    d.strftime('%A %d %B %Y')
+    print("The date is {:%A %d %B %Y}".format(d))
+
+    datetime.time(hour =3,minute=1,second=2,microsecond=232)
+    t = datetime.time(10,32,47,675623)
+    print("Time HR/Min/Sec/MSec : ",t.hour,"/",t.minute,"/",t.second,"/",t.microsecond)
+    print(t.strftime('%H    %M    %S'))
+    print("{t.hour}h{t.minute}m{t.second}s".format(t=t))
+
+    datetime.datetime(2003,5,12,14,33,22,245323) #year month day must be given
+    dt = datetime.datetime.strptime("Monday 6 January 2014, 12:13:31", 
+                                    "%A %d %B %Y, %H:%M:%S")
+    print(dt)
+
+    td = datetime.timedelta(weeks=1,minutes=2,milliseconds=5500)
+    #only days seconds and microseconds are stored, the rest are summed up
+    print("TimeDelta: ",td, "   Repr:", repr(td)) 
+    print("TD day/sec/microsec: ",td.days,"/",td.seconds,"/",td.microseconds)
+    a = datetime.datetime(year=2014,month=5,day=8,hour=14,minute=22)
+    b = datetime.datetime(year=2014,month=3,day=14,hour=12,minute=9)
+    d = a-b
+    print(d.total_seconds())
+    #arithmetic on time objects is not supported
+    print(datetime.date.today() + datetime.timedelta(weeks=1) * 3)
+
+    #utc -6
+    CST = datetime.timezone(datetime.timedelta(hours=-6),"CST")
+
+def advanced_iteration():
+    #nested comprehensions
+    values = [x-y
+              for x in range(100)
+              if x>50
+              for y in range(100)
+              if x-y != 0]
+    two_vals = [[y*3 for y in range(x)] for x in range(10)]
+    #print(two_vals)
+
+    y = 50 #showing that y can be a variable outside of the comprehension
+    me = [y+x for x in range(10)]
+    #print(me)
+
+    #mapping - lazy iterable so you have to use list or for loop to access elements
+    sizes = ['small','medium','large','xtra large']
+    colors = ['lavender','teal','burnt orange']
+    animals = ['koala','platypus','salamander']
+    def combine(size,color,animal):
+        return '{} {} {}'.format(size,color,animal)
+    print(list(map(combine,sizes,colors,animals)))
+    #alternative way
+    for x in map(combine, sizes, colors, animals):
+        print(x)
+
+    #filter: will only return the true elements
+    positives = filter(lambda x: x>0, [1,-5,0,6,-2,3])
+    print(list(positives))
+    trues = filter(None, [0,1, False, True, [], [1,2,3]]) #removes all the false
+
+    #reduce: repeatedly apply function to element of a sequence, reducing them to a single value
+    print(reduce(operator.add,[1,2,3,4,5]))
+
+class ExampleIterator:
+    def __init__(self,data):
+        self.index = 0
+        self.data = data
+    def __iter__(self):
+        return self
+    def __next__(self):
+        if self.index >= len(self.data):
+            raise StopIteration()
+
+        result = self.data[self.index]
+        self.index += 1
+        return result
+
+class ExampleIterable:
+    def __init__(self):
+        self.data = [1,2,3]
+    def __iter__(self):
+        return ExampleIterator(self.data)
+
+class AlternateIterable:
+    def __init__(self):
+        self.data = [1,2,3]
+    def __getitem__(self,index):
+        return self.data[index]
+
+#using the extended iter form iter(callable,sentinel), reads a file until the sentinel value
+'''
+with open('somefile.txt','rt') as f:
+    for line in iter(lambda: f.readline().strip(), 'END'):
+        print(line)
+'''
