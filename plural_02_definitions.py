@@ -1,5 +1,8 @@
+import decimal
+from decimal import Decimal
 def callableClass():
     return BasicFunctions() #returns a class object
+
 class BasicFunctions:
     def __init__(self):
         i = 0
@@ -12,6 +15,9 @@ class BasicFunctions:
         lamb(50)
         lamb2 = lambda: 5 % 2 == 1
     
+        #chained comparisons
+        if 1 < 2 < 3:
+            print(".... 1 < 2 < 3")
     #order: arg, *args, kwarg, **kwargs
     def multiple_arguments(self,arg, *args): #*args itself doesn't handle an error call with no arguments well
         v = arg
@@ -154,8 +160,40 @@ class ChildContainer(TestContainer):
     def celsius(self):
         return self._celsius
 
+    #if overriding a setter, you must do @parentclassnamehere.celsius.setter
     @celsius.setter
     def celsius(self,value):
         if value > ChildContainer.MAX_CELSIUS:
             raise ValueError("Temperature too hot!")
+        #in some cases: baseclass.celcius.fset(self,value)
         self._celsius = value
+
+class StringRepresentation:
+    def __init__(self,x,y):
+        self.x = x
+        self.y = y
+    
+    def __str__(self): #use a str to tell a human everything they need to know
+        return "({}, {})".format(self.x, self.y)
+    def __repr__(self): #use a repr to tell debuggers information they need to know
+        return 'StringRepresentation(x={}, y={})'.format(self.x,self.y)
+    
+    def __format__(self, f):
+        if f == 'r':
+            return '{}, {}'.format(self.y,self.x)
+        else:
+            return '{}, {}'.format(self.x,self.y)
+
+def testingNumbers():
+    print(.8 - .7)
+    x = Decimal('0.8') - Decimal('0.7')
+    print(x)
+    x = Decimal(.8) - Decimal(.7) #base 10 are getting converted to base 2 as .8 and .7 are float objects
+    print(x)
+    decimal.getcontext().prec = 6
+    x = Decimal('1.234567')
+    print(x)
+    Decimal('Infinity')
+    Decimal('-Infinity')
+    Decimal('NaN')
+ 

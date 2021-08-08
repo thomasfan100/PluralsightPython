@@ -1,7 +1,9 @@
 #import plural_01
 from plural_02_definitions import *
 
+
 def main():
+    #basic functions
     ''' 
     cC = callableClass()
     cC()
@@ -13,6 +15,7 @@ def main():
     me_callable.multiple_arguments(1,2,3,4,5)
     me_callable.keyword_arguments('img', src="monet.jpg",alt = "Sunrise by Claude", border =1)
     '''
+    #closures and decorators
     '''
     CandD = ClosuresandDecorators()
     
@@ -32,7 +35,7 @@ def main():
 
     hello('Fred')
     hello('Wilma')
-    '''
+    
     tc0 = TestContainer("YML","coffee")
     tc1 = TestContainer.create_empty("BBK")
     print(tc1.bic)
@@ -41,9 +44,17 @@ def main():
     print(cc0.bic)
     cc0.celsius = 1.0
     print(cc0.celsius)
-    
-
-
-
+    '''
+    #strings and representations
+    '''
+    sr = StringRepresentation(x= 42, y=69)
+    print(str(sr))
+    print(sr)
+    print(repr(sr))
+    #!r forces the use of __repr__ and !s forces the use of __str__. Often you don't need to use __format__
+    print('{:r}'.format(StringRepresentation(1,2)))
+    '''
+    #numeric and scaler types
+    testingNumbers()
 if __name__ == "__main__":
     main()
