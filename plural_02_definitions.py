@@ -322,3 +322,76 @@ with open('somefile.txt','rt') as f:
     for line in iter(lambda: f.readline().strip(), 'END'):
         print(line)
 '''
+
+#::::::INHERITANCE AND POLYMORPHISM::::::::
+
+#typechecking: isinstance(456,int), issubclass(IntList,SimpleList)
+#super returns a proxy object. bound =bound to specific class/instance. we will not use unbound here
+'''
+class bound
+super(base-class, derived-class).add
+take derived list MRO, find base-class in it, find first class base-class derives with a add
+'''
+'''
+instance bound
+super(class, instance-of-class)
+find MRO of instance-of-class, find class in MRO, use everything after the class for resolving methods
+'''
+'''
+super() with no arguments
+instance method - super(class-of-method,self)
+class method - super(class-of-method,class)
+'''
+class SimpleList:
+    def __init__(self, items):
+        self._items = list(items)
+
+    def add(self, item):
+        self._items.append(item)
+
+    def __getitem__(self, index):
+        return self._items[index]
+
+    def sort(self):
+        self._items.sort()
+
+    def __len__(self):
+        return len(self._items)
+
+    def __repr__(self):
+        return "SimpleList({!r})".format(self._items)
+
+class SortedList(SimpleList):
+    def __init__(self, items=()):
+        super().__init__(items)
+        self.sort()
+
+    def add(self, item):
+        super().add(item)
+        self.sort()
+
+    def __repr__(self):
+        return "SortedList({!r})".format(list(self))
+
+class IntList(SimpleList):
+    def __init__(self, items=()):
+        for x in items: self._validate(x)
+        super().__init__(items)
+
+    @staticmethod
+    def _validate(x):
+        if not isinstance(x, int):
+            raise TypeError('IntList only supports integer values.')
+
+    def add(self, item):
+        self._validate(item)
+        super().add(item)
+
+    def __repr__(self):
+        return "IntList({!r})".format(list(self))
+
+class SortedIntList(IntList, SortedList):
+    def __repr__(self):
+        return 'SortedIntList({!r})'.format(list(self))
+
+#::::::::IMPLEMENTING COLLECTIONS :::::::::::

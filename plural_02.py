@@ -1,6 +1,6 @@
 #import plural_01
 from plural_02_definitions import *
-
+from pprint import pprint as pp
 
 def main():
     #basic functions
@@ -56,11 +56,33 @@ def main():
     '''
     #numeric and scaler types
     #testingNumbers()
+
     #iterables and iteration
+    '''
     advanced_iteration()
     for i in ExampleIterable():
         print(i)
     for i in AlternateIterable():
         print(i)
+    '''
+
+    #inheritance and polymorphism
+    #method resolution order MRO = the class order it will look down to find a function
+    print("MRO:      ",SortedIntList.__mro__) #.mro() returns a list
+    print("BASES:    ",SortedIntList.__bases__) #tuple of base classes without the class itself
+    
+    pp(SortedIntList.mro())
+    '''
+    sil = SortedIntList()
+    sil.add(6)
+    ^^^ will use add of IntList(). The super() in that add method will refer not
+    to SimpleList which it derives but to SortedList which is next in SortedIntList.mro
+    ''' 
+    sil = SortedIntList([5,15,10])
+    super(SortedList,sil).add(6)
+    print(sil)
+    super(SortedList,sil).add('non-number type')
+    print(sil)
+    
 if __name__ == "__main__":
     main()
