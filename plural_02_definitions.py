@@ -394,4 +394,59 @@ class SortedIntList(IntList, SortedList):
     def __repr__(self):
         return 'SortedIntList({!r})'.format(list(self))
 
-#::::::::IMPLEMENTING COLLECTIONS :::::::::::
+#::::::::Exceptions and Errors :::::::::::
+
+#errors have mros
+def Errors():
+    print("indexerror: ",IndexError.mro())
+    print("keyerror: ",IndexError.mro())
+
+    num = 5
+    if type(num) != int:
+        raise ValueError("Not a int!")
+    
+    assert num > 1, "The condition was false."
+
+#custom exception
+class TriangleError(Exception):
+    def __init__(self,text,sides):
+        super().__init__(text)
+        self._sides = tuple(sides)
+    @property
+    def sides(self):
+        return self._sides
+    def __str__(self):
+        return "'{}' for sides {}".format(self.args[0],self._sides)
+    def __repr__(self):
+        return "TriangleError({!r},{!r}".format(self.args[0],self._sides) + ")"
+
+#:::::CONTEXT MANAGERS:::::
+class LoggingContextManager:
+    def __enter__(self):
+        return "__enter__"
+    def __exit__(self,exc_type,exc_val,exc_tb): #return None if it does not end exceptionally
+    #exception type, exception object, exception traceback
+        if exc_type is None:
+            print("no problemos bro")    
+        else:
+            print("big problem bro")
+            print("Type = ", exc_type)
+            print("Val = ",exc_val)
+            print("TB = ",exc_tb)
+            #if you dont return anything, it returns None which == False 
+            #which instructs the with statement to propogate exceptions
+
+def testContextManager():
+    with LoggingContextManager() as x:
+        print(x)
+    
+    #multiple context managers (all of the below are the same)
+    #with cm1() as a, cm2() as b:
+
+    #with cm1() as a,\
+    #     cm2() as b:
+
+    '''
+    with cm1() as a:
+        with cm2() as b:
+    '''
